@@ -1,0 +1,5 @@
+
+
+./deploy.sh
+./shell.sh
+env | grep K8S

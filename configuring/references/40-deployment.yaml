@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app-name: shell-demo
+  name: shell-demo
+  namespace: shell-demo
+spec:
+  selector:
+    matchLabels:
+      app-name: shell-demo
+  template:
+    metadata:
+      labels:
+        app-name: shell-demo
+        environment: production
+      annotations:
+        my-annotation: Value from an annotation
+    spec:
+      serviceAccountName: shell-demo-runner
+      containers:
+      - name: shell-demo
+        env:
+        - name: K8S_NODE_NAME 	
+          valueFrom:
+            fieldRef: 
+              fieldPath: spec.nodeName
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: K8S_MY_IPADDRESS
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: K8S_ENVIRONMENT
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['environment']
+        - name: K8S_ANNOTATION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['my-annotation']
+        command:
+          - /usr/bin/bash
+          - -c
+          - "sleep 1000"
+        image: fedora:36
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
