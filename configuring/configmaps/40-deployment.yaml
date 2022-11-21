@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app-name: shell-demo
+  name: shell-demo
+  namespace: shell-demo
+spec:
+  selector:
+    matchLabels:
+      app-name: shell-demo
+  template:
+    metadata:
+      labels:
+        app-name: shell-demo
+    spec:
+      serviceAccountName: shell-demo-runner
+      containers:
+      - name: shell-demo
+        env:
+        - name: CONFIGMAP_ENVVAR
+          valueFrom:
+            configMapKeyRef: 
+              name: democm # name of the config map
+              key: oneline # name of the key in the configmap
+        volumeMounts:
+          - name: config-volume-1    # mounting an entire config map
+            mountPath: /etc/config
+          - name: config-volume-2    # mounting a single file to a path (and renaming it)
+            mountPath: /etc/reasonably-named-file
+            subPath: SoMeGoOfYnAmEdFiLe
+        command:
+          - /usr/bin/bash
+          - -c
+          - "sleep 1000"
+        image: fedora:36
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+      volumes:
+        - name: config-volume-1
+          configMap:
+            name: democm
+        - name: config-volume-2
+          configMap:
+            name: democm
