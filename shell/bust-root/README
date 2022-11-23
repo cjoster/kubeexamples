@@ -1,0 +1,3 @@
+./deploy.sh
+./shell.sh
+nsenter --mount=/proc/1/ns/mnt -- /bin/bash

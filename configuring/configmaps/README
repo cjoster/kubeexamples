@@ -2,4 +2,9 @@
 
 ./deploy.sh
 ./shell.sh
-env | grep K8S
+env | grep CONFIGMAP
+ls -al /etc/config
+cat /etc/config/configfile
+cat /etc/config/SoMeGoOfYnAmEdFiLe
+ls -al /etc/reasonably-named-file
+cat /etc/reasonably-named-file

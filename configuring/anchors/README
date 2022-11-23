@@ -1,0 +1,5 @@
+
+
+./deploy.sh
+./shell.sh
+cat /proc/1/cmdline | tr '\0' ' '
